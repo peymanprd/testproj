@@ -1,46 +1,56 @@
 <template>
-    <nav class="bg-light py-3 my-4 border-b-1">
+    <nav class="bg-light py-3 mb-4 border-b-1">
         <Container>
             <BaseButton @doEvent="salamKon">ثبت نام</BaseButton>
-            <BaseInput></BaseInput>
+            <BaseInput format="currency"></BaseInput>
         </Container>
     </nav>
+    {{ isBarcode }}
     <button
         @click="isBarcode = !isBarcode"
-        class="py-3 px-6 bg-gray-700 rounded-full text-white hover:bg-gray-800"
+        class="
+            py-3
+            px-6
+            bg-green-700
+            rounded-full
+            text-white
+            hover:bg-gray-800
+            mr-8
+        "
     >
         بارکدخوان
     </button>
+    <div v-if="isBarcode" class="px-8 py-4 mx-4 my-4 rounded bg-blue-300">
+        Barcode is Run Bitchesssssssss!!!!!
+    </div>
     <template v-if="isBarcode">
         <StreamBarcodeReader @loaded="onLoaded" @decode="onDecode">
         </StreamBarcodeReader>
     </template>
+    <Test></Test>
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, reactive, toRefs } from 'vue'
 import Container from './base/Container.vue'
 import BaseButton from './base/Button.vue'
 import BaseInput from './base/Input.vue'
+import Test from './base/Test.vue'
 import { StreamBarcodeReader } from 'vue-barcode-reader'
 
 export default {
-    components: { Container, BaseButton, BaseInput, StreamBarcodeReader },
+    name: '',
+    components: { Container, BaseButton, BaseInput, Test, StreamBarcodeReader },
     setup() {
-        const barcodeValue = ref(1232564)
-        const isBarcode = ref(false)
-        function salamKon() {
-            console.log('salam persar!')
-        }
+        const barcode = reactive({
+            barcodeValue: null,
+            isBarcode: false,
+            salamKon: () => console.log('salam kon pesar!'),
+            onDecode: (result) => console.log('نتیجه اسکن : ' + result),
+            onLoaded: () => console.log('load mikone!'),
+        })
 
-        function onDecode(result) {
-            console.log('نتیجه اسکن : ' + result)
-        }
-        function onLoaded() {
-            console.log('load mikone!')
-        }
-
-        return { barcodeValue, salamKon, onDecode, onLoaded, isBarcode }
+        return { ...toRefs(barcode) }
     },
 }
 </script>
